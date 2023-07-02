@@ -1,8 +1,10 @@
+import { ChangeEvent, MouseEvent, useState } from "react"
 import type { NextPage } from "next";
+
 import Head from "next/head";
-import { ChangeEvent, MouseEvent, useState } from "react";
 
 import uploadFiles from "./api/upload";
+
 
 const Home: NextPage = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -74,6 +76,9 @@ const Home: NextPage = () => {
         }
       }
     }
+
+    setFiles([]);
+    setPreviewUrls([]);
   };
 
   interface User {
@@ -81,8 +86,6 @@ const Home: NextPage = () => {
     wordCount: number;
   }
   
-  
-
   return (
     <div>
       <Head>
@@ -97,37 +100,51 @@ const Home: NextPage = () => {
           </h1>
 
           <form onSubmit={(event) => event.preventDefault()}>
-            <div
-              className="flex p-3 border border-gray-500 border-dashed gap-1.5"
-              onDrop={dropFileHandler}
-              onDragOver={preventDefaultHandler}
-            >
-              <label className="flex flex-col items-center justify-center flex-grow h-full py-3 transition-colors duration-150 cursor-pointer hover:text-gray-600">
+            <div className="pb-2 md:flex gap-2">
+              <div
+                className="flex p-3 border border-gray-500 border-dashed gap-1.5 flex-grow h-[250px] mb-2 md:mb-auto"
+                onDrop={dropFileHandler}
+                onDragOver={preventDefaultHandler}
+              >
+                <label className="flex flex-col items-center justify-center flex-grow h-full py-3 transition-colors duration-150 cursor-pointer hover:text-gray-600">
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-14 h-14"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-14 h-14"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+                    />
+                  </svg>
+                  <strong className="text-sm font-medium">
+                    Drag and drop your file here
+                  </strong>
+                  <input
+                    className="block w-0 h-0"
+                    name="file"
+                    type="file"
+                    onChange={onFileUploadChange}
+                    multiple
                   />
-                </svg>
-                <strong className="text-sm font-medium">
-                  Drag and drop your file here
-                </strong>
-                <input
-                  className="block w-0 h-0"
-                  name="file"
-                  type="file"
-                  onChange={onFileUploadChange}
-                  multiple
-                />
-              </label>
+                </label>
+              </div>
+              {chattiestUsers.length > 0 && (
+                <div className='flex-grow p-3 border border-gray-500'>
+                  <h2>Chattiest Users:</h2>
+                  <ul className="max-h-[200px] overflow-auto">
+                    {chattiestUsers.map((user: User, index: number) => (
+                      <li key={index}>
+                        {user.username}: {user.wordCount}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
             {previewUrls.length > 0 && (
               <div>
@@ -135,18 +152,6 @@ const Home: NextPage = () => {
                 <ul>
                   {previewUrls.map((url, index) => (
                     <li key={index}>{url}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {chattiestUsers.length > 0 && (
-              <div>
-                <h2>Chattiest Users:</h2>
-                <ul>
-                  {chattiestUsers.map((user: User, index: number) => (
-                    <li key={index}>
-                      {user.username}: {user.wordCount}
-                    </li>
                   ))}
                 </ul>
               </div>
