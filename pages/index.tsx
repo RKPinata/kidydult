@@ -2,12 +2,13 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { ChangeEvent, MouseEvent, useState } from "react";
 
-import uploadFiles  from './api/upload';
-
+import uploadFiles from "./api/upload";
+import apiUrl from "../api-config"; // Path to the api-config.js file
 
 const Home: NextPage = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [chattiestUsers, setChattiestUsers] = useState([]);
 
   const handleFile = (fileList: FileList | null) => {
     if (!fileList || fileList.length === 0) {
@@ -60,36 +61,34 @@ const Home: NextPage = () => {
 
   const onUploadFileHandler = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-  
-    //send file to backend
-    // Send files to the backend
-  const formData = new FormData();
-  files.forEach((file) => {
-    formData.append('files', file);
-  });
 
-  try {
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append("files", file);
     });
 
-    if (response.ok) {
-      // Files uploaded successfully
-      console.log('Files uploaded successfully.');
-      
-    } else {
-      // Handle the error case
-      console.error('Failed to upload files.');
-    }
-  } catch (error) {
-    // Handle any network or other errors
-    console.error('An error occurred while uploading files:', error);
-  }
+    try {
+      const response = await fetch(`${apiUrl}/api/upload`, {
+        // Use the apiUrl variable to construct the API endpoint URL
+        method: "POST",
+        body: formData,
+      });
 
+      if (response.ok) {
+        // Files uploaded successfully
+        console.log("Files uploaded successfully.");
+        const data = await response.json();
+        const chattiestUsers = data.chattiestUsers; // Access the chattiestUsers from the response data
+        setChattiestUsers(chattiestUsers);
+      } else {
+        // Handle the error case
+        console.error("Failed to upload files.");
+      }
+    } catch (error) {
+      // Handle any network or other errors
+      console.error("An error occurred while uploading files:", error);
+    }
   };
-  
-  
 
   return (
     <div>
@@ -101,7 +100,7 @@ const Home: NextPage = () => {
       <main className="py-10">
         <div className="w-full min-h-screen max-w-3xl px-3 mx-auto">
           <h1 className="mb-10 text-3xl font-bold text-gray-900">
-            Upload your files {'(.txt)'}
+            Upload your files {"(.txt)"}
           </h1>
 
           <form onSubmit={(event) => event.preventDefault()}>
@@ -147,7 +146,18 @@ const Home: NextPage = () => {
                 </ul>
               </div>
             )}
-
+            {chattiestUsers.length > 0 && (
+              <div>
+                <h2>Chattiest Users:</h2>
+                <ul>
+                  {chattiestUsers.map((user, index) => (
+                    <li key={index}>
+                      {user.username}: {user.wordCount}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <div className="flex mt-4 gap-1.5">
               <button
                 onClick={onUploadFileHandler}
