@@ -34,7 +34,7 @@ const Home: NextPage = () => {
     ]);
   };
 
-  const onFileUploadChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const onFileUploadChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     handleFile(event.target.files);
   };
 
@@ -93,8 +93,8 @@ const Home: NextPage = () => {
         <meta name="description" content="File uploader" />
       </Head>
 
-      <main className="py-10">
-        <div className="w-full min-h-screen max-w-3xl px-3 mx-auto">
+      <main className="py-10 min-h-screen">
+        <div className="w-full max-w-3xl px-3 mx-auto">
           <h1 className="mb-10 text-3xl font-bold text-gray-900">
             Upload your files {"(.txt)"}
           </h1>
@@ -102,7 +102,7 @@ const Home: NextPage = () => {
           <form onSubmit={(event) => event.preventDefault()}>
             <div className="pb-2 md:flex gap-2">
               <div
-                className="flex p-3 border border-gray-500 border-dashed gap-1.5 flex-grow h-[250px] mb-2 md:mb-auto"
+                className="flex p-3 rounded-lg border border-gray-500 border-dashed gap-1.5 flex-grow h-[300px] mb-2 md:mb-auto"
                 onDrop={dropFileHandler}
                 onDragOver={preventDefaultHandler}
               >
@@ -128,15 +128,15 @@ const Home: NextPage = () => {
                     className="block w-0 h-0"
                     name="file"
                     type="file"
-                    onChange={onFileUploadChange}
+                    onChange={onFileUploadChangeHandler}
                     multiple
                   />
                 </label>
               </div>
               {chattiestUsers.length > 0 && (
-                <div className='flex-grow p-3 border border-gray-500'>
-                  <h2>Chattiest Users:</h2>
-                  <ul className="max-h-[200px] overflow-auto">
+                <div className='flex-grow p-4 border border-gray-500 rounded-lg'>
+                  <h2 className='font-bold pb-2'>Chattiest Users:</h2>
+                  <ul className="max-h-[250px] overflow-auto rounded-lg py-1.5 pl-1 bg-gray-800 text-gray-100 shadow-lg">
                     {chattiestUsers.map((user: User, index: number) => (
                       <li key={index}>
                         {user.username}: {user.wordCount}

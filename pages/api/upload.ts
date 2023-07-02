@@ -1,4 +1,4 @@
-import apiUrl from "@/api-config"; // Path to the api-config.js file
+import apiUrl from "@/api-config"; 
 
 const uploadFiles = async (files: File[]) => {
   const formData = new FormData();
