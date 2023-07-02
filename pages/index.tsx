@@ -75,6 +75,12 @@ const Home: NextPage = () => {
       }
     }
   };
+
+  interface User {
+    username: string;
+    wordCount: number;
+  }
+  
   
 
   return (
@@ -137,7 +143,7 @@ const Home: NextPage = () => {
               <div>
                 <h2>Chattiest Users:</h2>
                 <ul>
-                  {chattiestUsers.map((user, index) => (
+                  {chattiestUsers.map((user: User, index: number) => (
                     <li key={index}>
                       {user.username}: {user.wordCount}
                     </li>
