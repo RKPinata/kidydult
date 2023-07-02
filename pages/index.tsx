@@ -63,15 +63,19 @@ const Home: NextPage = () => {
     try {
       const chattiestUsers = await uploadFiles(files);
       setChattiestUsers(chattiestUsers);
-    } catch (error) {
-      if (error.message === "Network Error") {
-        console.error("An error occurred while uploading files. Please check your internet connection and try again.");
-      }
-      else {
-        console.error("An error occurred while uploading files:", error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error.message === "Network Error") {
+          console.error(
+            "An error occurred while uploading files. Please check your internet connection and try again."
+          );
+        } else {
+          console.error("An error occurred while uploading files:", error);
+        }
       }
     }
   };
+  
 
   return (
     <div>
