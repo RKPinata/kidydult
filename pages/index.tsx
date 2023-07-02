@@ -3,7 +3,6 @@ import Head from "next/head";
 import { ChangeEvent, MouseEvent, useState } from "react";
 
 import uploadFiles from "./api/upload";
-import apiUrl from "../api-config"; // Path to the api-config.js file
 
 const Home: NextPage = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -42,7 +41,6 @@ const Home: NextPage = () => {
     event.stopPropagation();
 
     handleFile(event.dataTransfer.files);
-    console.log("success");
   };
 
   const preventDefaultHandler = (event: React.DragEvent<HTMLDivElement>) => {
@@ -61,32 +59,17 @@ const Home: NextPage = () => {
 
   const onUploadFileHandler = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-
-    const formData = new FormData();
-    files.forEach((file) => {
-      formData.append("files", file);
-    });
-
+  
     try {
-      const response = await fetch(`${apiUrl}/api/upload`, {
-        // Use the apiUrl variable to construct the API endpoint URL
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        // Files uploaded successfully
-        console.log("Files uploaded successfully.");
-        const data = await response.json();
-        const chattiestUsers = data.chattiestUsers; // Access the chattiestUsers from the response data
-        setChattiestUsers(chattiestUsers);
-      } else {
-        // Handle the error case
-        console.error("Failed to upload files.");
-      }
+      const chattiestUsers = await uploadFiles(files);
+      setChattiestUsers(chattiestUsers);
     } catch (error) {
-      // Handle any network or other errors
-      console.error("An error occurred while uploading files:", error);
+      if (error.message === "Network Error") {
+        console.error("An error occurred while uploading files. Please check your internet connection and try again.");
+      }
+      else {
+        console.error("An error occurred while uploading files:", error);
+      }
     }
   };
 
